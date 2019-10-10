@@ -1,44 +1,15 @@
 
+import _ from 'lodash';
 import path from 'path';
 
-const config = {
-  storage: path.join(__dirname, '../store/test-storage'),
-  uplinks: {
-    'npmjs': {
-      'url': 'https://registry.npmjs.org/'
-    }
-  },
-  packages: {
-    '@*/*': {
-      allow_access: '$all',
-      allow_publish: '$all',
-      proxy: 'npmjs'
-    },
+import {parseConfigFile} from '../../../../src/lib/utils';
 
-    'forbidden-place': {
-      allow_access: 'nobody',
-      allow_publish: '$all'
-    },
+/**
+ * Override the default.yaml configuration file with any new config provided.
+ */
+export default (options, url = 'default.yaml') => {
+  const locationFile = path.join(__dirname, `../config/yaml/${url}`);
+  const config = parseConfigFile(locationFile);
 
-    'react': {
-      allow_access: '$all',
-      allow_publish: '$all',
-      proxy: 'npmjs'
-    },
-
-    'jquery': {
-      allow_access: '$all',
-      allow_publish: '$all',
-      proxy: 'npmjs'
-    },
-    '*': {
-      allow_access: '$all',
-      allow_publish: '$all'
-    },
-  },
-  logs: [
-    {type: 'stdout', format: 'pretty', level: 'fatal'},
-  ],
-};
-
-module.exports = config;
+  return _.assign({}, _.cloneDeep(config), options);
+}

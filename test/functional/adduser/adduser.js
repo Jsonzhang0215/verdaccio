@@ -1,3 +1,5 @@
+import {API_ERROR, HTTP_STATUS} from "../../../src/lib/constants";
+
 export default function(server) {
   describe('npm adduser', () => {
     const user = String(Math.random());
@@ -5,22 +7,22 @@ export default function(server) {
 
     beforeAll(function() {
       return server.auth(user, pass)
-               .status(201)
-               .body_ok(/user .* created/);
+        .status(HTTP_STATUS.CREATED)
+        .body_ok(/user .* created/);
     });
 
     test('should create new user', () => {});
 
     test('should log in', () => {
       return server.auth(user, pass)
-               .status(201)
-               .body_ok(/you are authenticated as/);
+        .status(HTTP_STATUS.CREATED)
+        .body_ok(/you are authenticated as/);
     });
 
     test('should not register more users', () => {
       return server.auth(String(Math.random()), String(Math.random()))
-               .status(409)
-               .body_error(/maximum amount of users reached/);
+        .status(HTTP_STATUS.CONFLICT)
+        .body_error(API_ERROR.MAX_USERS_REACHED);
     });
   });
 }

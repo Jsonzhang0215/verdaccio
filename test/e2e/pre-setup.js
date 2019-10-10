@@ -1,3 +1,4 @@
-require("babel-polyfill");
-require('babel-register');
+require('@babel/register')({
+  extensions: [".ts", ".js"]
+});
 module.exports = require('./setup');
